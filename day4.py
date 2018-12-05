@@ -8,40 +8,39 @@ import re
 from operator import add
 file = open("day4.txt","r")
 
+"""
+总体思路：
+1. 将记录分为时间戳和内容两部分放在字典里。注意：不允许有重复的时间戳
+2. 根据时间戳对乱序的记录排序
+3. 根据guard的ID来计算00:00-00:59这60分钟（用一个长度为60的list来表示），每一分钟他睡觉的次数总和
+4. 解两个方案。
+    对于方案一：先看00:00-00:59这个时间段那个guard睡的最多，然后计算guard那一分钟睡的次数最多。
+    对于方案二：就是00:00-00:59这个时间段里，哪个guard睡的次数最多
+"""
+# 第一步
 record = dict()
 for line in file:
-    (time,content) = [t(s) for t,s in zip((str,str), re.search('^(\[.+\] )(.+)$',str(line)).groups())]
-    if(time in record):
+    (timestamp,content) = [t(s) for t,s in zip((str,str), re.search('^(\[.+\] )(.+)$',str(line)).groups())]
+    if(timestamp in record):
         print("It's not right list")
     else:
-        record[time] = content
+        record[timestamp] = content
 file.close()
 
-# 第一步：获取排序之后的记录
-sortedRecord = list()
-outFile = open("test.txt","w")
-for key in sorted(record):
-    sortedRecord.append((key,record[key]))
-    outFile.write(key + record[key] + '\n')
-    
-outFile.close()
 guards = dict()
-guardID = str(" ")
-
-for rec in sortedRecord:
-    time = rec[0]
-    state = rec[1]
+# 第二、三步 排序和解析
+for rec in sorted(record):
+    state = record[rec]
     if(state[0] is 'G'):
         guardID = re.search('^Guard.#([\d.]+) begins shift',str(state)).groups()
         if(guardID not in guards):
-            onehourList = [0]*60
-            guards[guardID]  = onehourList
+            guards[guardID]  = [0]*60
     elif(state[0] is 'f'):
-        timeBeginSleep = int(re.search('^\[\d{4}-\d{2}-\d{2} \d{2}:(\d{2})\].$',str(time)).groups()[0])
+        timeBeginSleep = int(re.search('^\[\d{4}-\d{2}-\d{2} \d{2}:(\d{2})\].$',str(rec)).groups()[0])
         for i in range(timeBeginSleep,60):
             guards[guardID][i]  += 1
     elif(state[0] is 'w'):
-        timeBeginAwake= int(re.search('^\[\d{4}-\d{2}-\d{2} \d{2}:(\d{2})\].$',str(time)).groups()[0])
+        timeBeginAwake= int(re.search('^\[\d{4}-\d{2}-\d{2} \d{2}:(\d{2})\].$',str(rec)).groups()[0])
         for i in range(timeBeginAwake,60):
             guards[guardID][i]  -= 1
 
@@ -60,9 +59,6 @@ for guard in guards:
         
 print(int(mostlazyGruadID) * int(mostSuitHour))
 
-
-
-
 # part 2
 """
 找到频率最高的那个ID和次数
@@ -77,9 +73,7 @@ for guard in guards:
         output = result
         mostmost = guards[guard][index]
         
-        
 print(output)
-
 
 """
 文中只给出了两种方案，下面是我自己想的一种方案的解法。
@@ -88,7 +82,7 @@ print(output)
 然后找到那一时刻，睡着次数最多的guard
 算出guard's ID * times of asleep of that moment
 """
-# part 2
+# part 3
 countList = [0]*60
 for guard in guards:
     countList = list(map(add,countList, guards[guard]))
