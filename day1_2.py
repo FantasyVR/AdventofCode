@@ -2,7 +2,7 @@
 """
 Created on Sun Dec  2 22:53:40 2018
 
-@author: HV
+@author: RV
 """
 
 file = open("day1.txt","r")

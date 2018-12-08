@@ -2,7 +2,7 @@
 """
 Created on Fri Dec  7 16:07:10 2018
 
-@author: HV
+@author: RV
 """
 def getUnconstraintChar(pairs, chars):
     candidateCharList = list()

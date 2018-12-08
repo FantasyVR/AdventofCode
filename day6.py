@@ -2,7 +2,7 @@
 """
 Created on Thu Dec  6 13:09:13 2018
 
-@author: HV
+@author: RV
 """
 import sys
 def computeDistance(coor, point):
