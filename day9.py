@@ -9,8 +9,8 @@ At first, I used list. But it's to slow to solve part 2
 So, I found blist.
 It's more efficient for inserting O(logn).
 """
-import blist
-
+from blist import blist
+import time
 numPlayer = 476 
 lastMarble  = 7143100 
 
@@ -19,7 +19,7 @@ scores = [0] * numPlayer
 
 marbalIndex = 0
 gameList.append(marbalIndex)
-
+begin = time.time()
 current = 0
 while(marbalIndex <= lastMarble):
     for i in range(numPlayer):
@@ -49,7 +49,9 @@ while(marbalIndex <= lastMarble):
         else:
             gameList.insert(current+2,marbalIndex)
             current += 2 
-    
+end = time.time()
+
+print("computing time:",end - begin)
 highScore = 0
 for score in scores:
     if score > highScore:
