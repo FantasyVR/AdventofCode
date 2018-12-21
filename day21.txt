@@ -1,0 +1,113 @@
+ #ip 2
+seti 123 0 5
+bani 5 456 5
+eqri 5 72 5
+addr 5 2 2
+seti 0 0 2
+seti 0 4 5
+bori 5 65536 4
+seti 15466939 9 5
+bani 4 255 3
+addr 5 3 5
+bani 5 16777215 5
+muli 5 65899 5
+bani 5 16777215 5
+gtir 256 4 3
+addr 3 2 2
+addi 2 1 2
+seti 27 8 2
+seti 0 7 3
+addi 3 1 1
+muli 1 256 1
+gtrr 1 4 1
+addr 1 2 2
+addi 2 1 2
+seti 25 2 2
+addi 3 1 3
+seti 17 7 2
+setr 3 7 4
+seti 7 3 2
+eqrr 5 0 3
+addr 3 2 2
+seti 5 9 2
+
+
+
+
+
+
+
+-------------------------------------------------------------------------------------
+
+  #ip 2	
+  # 0 1 2  3 4 5	
+  # a b ip c d e	
+0	seti 123 0 5 			# e = 123  
+1	bani 5 456 5 			# e &= 456 = 72
+2	eqri 5 72 5  			# if e == 72 then e = 1 else e = 0
+3	addr 5 2 2   			# ip += e 
+4	seti 0 0 2   			# ip  = 0
+5	seti 0 4 5   			#  e  = 0
+6	bori 5 65536 4			#  d  = e | 65536
+7	seti 15466939 9 5 		#  e  = 15466939
+8	bani 4 255 3			#  c  = d & 255
+9	addr 5 3 5				#  e += c
+10	bani 5 16777215 5		#  e &= 16777215
+11	muli 5 65899 5			#  e *= 65899
+12	bani 5 16777215 5		#  e &= 16777215
+13	gtir 256 4 3			# if 256 > d then c = 1 else c = 0
+14	addr 3 2 2				# ip += c
+15	addi 2 1 2				# ip += 1
+16	seti 27 8 2				# ip = 27 #  
+17	seti 0 7 3				# c = 0
+18	addi 3 1 1				# b = c + 1
+19	muli 1 256 1			# b *= 256
+20	gtrr 1 4 1				# if b > d then b = 1 else b = 0
+21	addr 1 2 2				# ip = b + ip
+22	addi 2 1 2				# ip = ip + 1
+23	seti 25 2 2				# ip = 25
+24	addi 3 1 3				# c += 1
+25	seti 17 7 2				# ip = 17
+26	setr 3 7 4				# d = c
+27	seti 7 3 2				# ip = 7
+28	eqrr 5 0 3				# if e == a then c = 1 else c = 0
+29	addr 3 2 2				# ip = c + ip : halt
+30	seti 5 9 2  			# ip = 5
+
+
+
+
+
+
+--------------------------------------Neat explanation---------------------------------
+  #ip 2	
+  # 0 1 2  3 4 5	
+  # a b ip c d e	
+0	seti 123 0 5 			# e = 123  
+1	bani 5 456 5 			# e &= 456 = 72
+2	eqri 5 72 5  			# if e == 72 then goto line 5 else goto line 1
+5	seti 0 4 5   			#  e  = 0
+6	bori 5 65536 4			#  d  = e | 0x10000
+7	seti 15466939 9 5 		#  e  = 15466939
+
+#########################  Loop #############################
+# initialization
+8	bani 4 255 3			#  c  = d & 0xFF
+9	addr 5 3 5				#  e += c
+10	bani 5 16777215 5		#  e &= 0xFFFFFF
+11	muli 5 65899 5			#  e *= 65899
+12	bani 5 16777215 5		#  e &= 0xFFFFFF
+
+13	gtir 256 4 3			# if 256 > d then goto line 28 else goto line 17
+28	eqrr 5 0 3				# if e == a then halt else goto line 6
+
+########################  d = int(d/256) ##########################
+17	seti 0 7 3				# c = 0
+18	addi 3 1 1				# b = c + 1
+19	muli 1 256 1			# b *= 256
+20	gtrr 1 4 1				# if b > d then goto line 26 else line 24
+24	addi 3 1 3				# c += 1
+25	seti 17 7 2				# goto line 18
+26	setr 3 7 4				# d = c
+27	seti 7 3 2				# goto line 8
+
