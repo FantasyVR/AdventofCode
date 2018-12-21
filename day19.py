@@ -51,7 +51,7 @@ def compute(registers,instruction):
 
 
 def main():
-    lines = open("day19.txt").read().split('\n')
+    lines = open("day21.txt").read().split('\n')
     boundReg = int(lines[0].split(' ')[1])
     program = defaultdict(str)
     for i in range(1, len(lines)):
@@ -63,13 +63,17 @@ def main():
 	# 之后获取sum(factors of big number)
     # registers[0]  = 1
     ip = registers[boundReg]
+    maxE = 0
     while ip < programlen:
         registers[boundReg] = ip
         instr = program[ip].split(' ')  # 从IP地址取出指令
-        print("ip = %2d" % ip, registers, program[ip], end=' ')  # IP 地址， 寄存器内容， 程序中的指令
+        # print("ip = %2d" % ip, registers, program[ip], end=' ')  # IP 地址， 寄存器内容， 程序中的指令
         registers = compute(registers, instr)  # 执行指令，并返回寄存器的内容
-        print(registers)
+        # print(registers)
         ip = registers[boundReg]  # IP 地址加 1
+        if registers[5] > maxE:
+            maxE = registers[5]
+            print(maxE)
         ip += 1  # 把IP地址放进 绑定的寄存器中
 
 if __name__ == "__main__":

@@ -14,6 +14,9 @@ for i in range(len(lines)):
        row.append(lines[i][j])
     ground.append(row)
 minute = 0
+# part 1 
+# maxIter = 10
+# part 2
 maxIter = 1000
 
 result = 0
